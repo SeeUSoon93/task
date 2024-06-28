@@ -1,0 +1,12 @@
+.main-content {
+  padding: 80px 20px 20px 20px; /* 헤더와의 거리를 둡니다 */
+  display: flex;
+  justify-content: center; /* 컨테이너의 내용물을 중앙에 배치 */
+}
+
+.project-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px; /* 카드 간의 간격을 설정 */
+  justify-content: center; /* 카드들을 중앙 정렬 */
+}

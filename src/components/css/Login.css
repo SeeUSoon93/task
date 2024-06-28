@@ -1,0 +1,9 @@
+.login-btn {
+  font-family: "SUITE-700", sans-serif;
+  background-color: #3db7cc; /* 버튼 배경색 설정 */
+  color: #fff; /* 버튼 텍스트 색상 설정 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* 버튼에 그림자 추가 */
+}
+.login-btn:hover {
+  background-color: #005766; /* 버튼 호버 배경색 설정 */
+}
