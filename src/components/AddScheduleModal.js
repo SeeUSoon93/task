@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Form, Input, DatePicker, Button, Row, Col } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const { RangePicker } = DatePicker;
 
 const AddScheduleModal = ({ visible, onCancel, onCreate, initialValues }) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        ...initialValues,
+        period: initialValues.period.map((date) => moment(date)), // Date 객체를 Moment.js 객체로 변환
+      });
+    }
+  }, [initialValues, form]);
 
   const handleFinish = (values) => {
     const { period, ...rest } = values;

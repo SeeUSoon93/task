@@ -8,8 +8,8 @@ const Login = ({ setLoggedIn }) => {
   const onFinish = (values) => {
     setLoading(true);
     const { username, password } = values;
-    const adminUsername = process.env.REACT_APP_USERNAME;
-    const adminPassword = process.env.REACT_APP_PASSWORD;
+    const adminUsername = process.env.REACT_APP_ADMIN_USERNAME;
+    const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD;
 
     if (username === adminUsername && password === adminPassword) {
       message.success("로그인 성공!");
