@@ -3,7 +3,7 @@ import Login from "./components/Login";
 import AppHeader from "./components/Header";
 import MainContent from "./components/MainContent";
 import AddProjectModal from "./components/AddProjectModal";
-import { db, collection, addDoc, getDocs } from "./firebase";
+import { db, collection, addDoc, getDocs, doc, updateDoc } from "./firebase";
 
 // npm install antd firebase moment vis-timeline
 
@@ -13,6 +13,7 @@ function App() {
     useState(false);
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [editingProject, setEditingProject] = useState(null);
 
   const fetchProjects = async () => {
     const projectsCollection = collection(db, "projects");
@@ -56,14 +57,21 @@ function App() {
   };
 
   const handleAddProject = () => {
+    setEditingProject(null);
+    setIsAddProjectModalVisible(true);
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProject(project);
     setIsAddProjectModalVisible(true);
   };
 
   const handleCancelAddProject = () => {
     setIsAddProjectModalVisible(false);
+    setEditingProject(null);
   };
 
-  const handleCreate = async (newProject) => {
+  const handleCreateOrUpdateProject = async (newProject) => {
     const formattedProject = {
       ...newProject,
       period: newProject.period.map((date) =>
@@ -73,13 +81,28 @@ function App() {
         ? newProject.requirements.filter((req) => req.requirement)
         : [],
     };
-    const projectDoc = await addDoc(
-      collection(db, "projects"),
-      formattedProject
-    );
-    const addedProject = { id: projectDoc.id, ...formattedProject };
-    setProjects([...projects, addedProject]);
+
+    if (editingProject) {
+      const projectDoc = doc(db, "projects", editingProject.id);
+      await updateDoc(projectDoc, formattedProject);
+      setProjects(
+        projects.map((project) =>
+          project.id === editingProject.id
+            ? { id: editingProject.id, ...formattedProject }
+            : project
+        )
+      );
+    } else {
+      const projectDoc = await addDoc(
+        collection(db, "projects"),
+        formattedProject
+      );
+      const addedProject = { id: projectDoc.id, ...formattedProject };
+      setProjects([...projects, addedProject]);
+    }
+
     setIsAddProjectModalVisible(false);
+    setEditingProject(null);
   };
 
   const handleSearchChange = (term) => {
@@ -101,13 +124,15 @@ function App() {
           <div className="main-container">
             <MainContent
               projects={filteredProjects}
+              onEditProject={handleEditProject}
               setProjects={setProjects}
             />
           </div>
           <AddProjectModal
             open={isAddProjectModalVisible}
             onCancel={handleCancelAddProject}
-            onCreate={handleCreate}
+            onCreate={handleCreateOrUpdateProject}
+            initialValues={editingProject}
           />
         </>
       ) : (

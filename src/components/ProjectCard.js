@@ -5,7 +5,13 @@ import "./css/ProjectCard.css";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
-const ProjectCard = ({ project, onDelete, onEdit, onScheduleAdd }) => {
+const ProjectCard = ({
+  project,
+  onDelete,
+  onEdit,
+  onScheduleAdd,
+  onCheckboxChange,
+}) => {
   const [isScheduleModalVisible, setIsScheduleModalVisible] = useState(false);
 
   const startDate =
@@ -79,7 +85,14 @@ const ProjectCard = ({ project, onDelete, onEdit, onScheduleAdd }) => {
               {project.requirements && project.requirements.length > 0 ? (
                 project.requirements.map((req, index) => (
                   <li key={index} className="requirement-item">
-                    {req.requirement} <Checkbox style={{ marginLeft: "8px" }} />
+                    {req.requirement}{" "}
+                    <Checkbox
+                      style={{ marginLeft: "8px" }}
+                      checked={req.checked}
+                      onChange={(e) =>
+                        onCheckboxChange(project.id, index, e.target.checked)
+                      }
+                    />
                   </li>
                 ))
               ) : (

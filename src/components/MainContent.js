@@ -1,41 +1,16 @@
-import React, { useState, useEffect } from "react";
-import {
-  db,
-  collection,
-  getDocs,
-  doc,
-  deleteDoc,
-  updateDoc,
-} from "../firebase";
+import React, { useState } from "react";
+import { db, doc, deleteDoc, updateDoc } from "../firebase";
 import ProjectCard from "./ProjectCard";
-import AddProjectModal from "./AddProjectModal";
-import AddScheduleModal from "./AddScheduleModal"; // 일정 추가 모달 컴포넌트 추가
-import ScheduleView from "./ScheduleView"; // 일정 보기 컴포넌트 추가
+import AddScheduleModal from "./AddScheduleModal";
+import ScheduleView from "./ScheduleView";
 import { Tabs } from "antd";
 import "./css/MainContent.css";
 
 const { TabPane } = Tabs;
 
-const MainContent = () => {
-  const [projects, setProjects] = useState([]);
-  const [editingProject, setEditingProject] = useState(null);
-  const [isProjectModalVisible, setIsProjectModalVisible] = useState(false);
+const MainContent = ({ projects, onEditProject, setProjects }) => {
   const [isScheduleModalVisible, setIsScheduleModalVisible] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const projectsCollection = collection(db, "projects");
-      const snapshot = await getDocs(projectsCollection);
-      const projectsData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setProjects(projectsData);
-    };
-
-    fetchProjects();
-  }, []);
 
   const handleDelete = async (id) => {
     const projectDoc = doc(db, "projects", id);
@@ -44,32 +19,34 @@ const MainContent = () => {
   };
 
   const handleEdit = (project) => {
-    setEditingProject(project);
-    setIsProjectModalVisible(true);
+    onEditProject(project);
   };
 
-  const handleUpdate = async (updatedProject) => {
-    const projectDoc = doc(db, "projects", updatedProject.id);
-    const formattedProject = {
-      ...updatedProject,
-      period: updatedProject.period.map((date) => new Date(date)), // Date 객체로 변환
-      requirements: updatedProject.requirements
-        ? updatedProject.requirements.filter((req) => req.requirement)
-        : [],
-    };
-    await updateDoc(projectDoc, formattedProject);
+  const handleScheduleAdd = (projectId, schedule) => {
+    const project = projects.find((proj) => proj.id === projectId);
+    const updatedSchedules = [...(project.schedules || []), schedule];
+    const updatedProject = { ...project, schedules: updatedSchedules };
+
+    const projectDoc = doc(db, "projects", projectId);
+    updateDoc(projectDoc, { schedules: updatedSchedules });
+
     setProjects(
-      projects.map((project) =>
-        project.id === updatedProject.id ? formattedProject : project
-      )
+      projects.map((proj) => (proj.id === projectId ? updatedProject : proj))
     );
-    setIsProjectModalVisible(false);
-    setEditingProject(null);
   };
 
-  const handleScheduleAdd = (project) => {
-    setCurrentProject(project);
-    setIsScheduleModalVisible(true);
+  const handleCheckboxChange = async (projectId, index, checked) => {
+    const project = projects.find((proj) => proj.id === projectId);
+    const updatedRequirements = [...project.requirements];
+    updatedRequirements[index].checked = checked;
+
+    const projectDoc = doc(db, "projects", projectId);
+    await updateDoc(projectDoc, { requirements: updatedRequirements });
+
+    const updatedProject = { ...project, requirements: updatedRequirements };
+    setProjects(
+      projects.map((proj) => (proj.id === projectId ? updatedProject : proj))
+    );
   };
 
   const handleScheduleCreate = async (newSchedule) => {
@@ -88,8 +65,6 @@ const MainContent = () => {
   };
 
   const handleCancel = () => {
-    setIsProjectModalVisible(false);
-    setEditingProject(null);
     setIsScheduleModalVisible(false);
     setCurrentProject(null);
   };
@@ -106,7 +81,8 @@ const MainContent = () => {
                   project={project}
                   onDelete={handleDelete}
                   onEdit={handleEdit}
-                  onScheduleAdd={handleScheduleAdd} // 일정 추가 핸들러
+                  onScheduleAdd={handleScheduleAdd}
+                  onCheckboxChange={handleCheckboxChange}
                 />
               ))
             ) : (
@@ -115,16 +91,9 @@ const MainContent = () => {
           </div>
         </TabPane>
         <TabPane tab="일정 보기" key="2">
-          준비중입니다.
-          {/* <ScheduleView projects={projects} /> */}
+          <ScheduleView projects={projects} />
         </TabPane>
       </Tabs>
-      <AddProjectModal
-        visible={isProjectModalVisible}
-        onCancel={handleCancel}
-        onCreate={handleUpdate}
-        initialValues={editingProject}
-      />
       <AddScheduleModal
         visible={isScheduleModalVisible}
         onCancel={handleCancel}
