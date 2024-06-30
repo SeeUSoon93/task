@@ -1,90 +1,126 @@
-import React, { useState, useEffect } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Modal, Button, Checkbox, Row, Col } from "antd";
-
-const localizer = momentLocalizer(moment);
+import React from "react";
+import ReactApexChart from "react-apexcharts";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "./css/ScheduleView.css";
 
 const ScheduleView = ({ projects }) => {
-  const [events, setEvents] = useState([]);
-  const [selectedSchedule, setSelectedSchedule] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const seriesData = projects.map((project) => ({
+    data: project.schedules?.map((schedule) => {
+      const startDate =
+        schedule.startDate instanceof firebase.firestore.Timestamp
+          ? schedule.startDate.toDate().getTime()
+          : new Date(schedule.startDate).getTime();
 
-  useEffect(() => {
-    let eventsList = [];
+      const endDate =
+        schedule.endDate instanceof firebase.firestore.Timestamp
+          ? schedule.endDate.toDate().getTime()
+          : new Date(schedule.endDate).getTime();
 
-    projects.forEach((project) => {
-      if (project.schedules) {
-        project.schedules.forEach((schedule) => {
-          eventsList.push({
-            title: project.title,
-            start: new Date(schedule.period[0]),
-            end: new Date(schedule.period[1]),
-            content: schedule.content,
-            requirements: schedule.requirements || [],
-          });
-        });
-      }
-    });
+      return {
+        x: project.title,
+        y: [startDate, endDate],
+        label: {
+          text: schedule.content,
+        },
+      };
+    }),
+  }));
 
-    setEvents(eventsList);
-  }, [projects]);
-
-  const handleEventClick = (event) => {
-    setSelectedSchedule(event);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedSchedule(null);
+  const options = {
+    chart: {
+      type: "rangeBar",
+      width: "100%",
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          pan: true,
+          reset: true,
+        },
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        borderRadius: 25,
+      },
+    },
+    xaxis: {
+      type: "datetime",
+      position: "top",
+      labels: {
+        style: {
+          fontFamily: "SUITE-400, sans-serif",
+          fontSize: "15px",
+        },
+        formatter: function (val) {
+          return new Date(val)
+            .toLocaleDateString("ko-KR", {
+              year: "2-digit",
+              month: "2-digit",
+              day: "2-digit",
+            })
+            .replace(/\./g, ".");
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          fontFamily: "SUITE-900, sans-serif",
+          fontSize: "20px",
+        },
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val, opts) {
+        const { dataPointIndex, w } = opts;
+        return w.config.series[opts.seriesIndex].data[dataPointIndex].label
+          .text;
+      },
+      style: {
+        colors: ["#000"],
+        fontSize: "15px",
+        fontFamily: "SUITE-700, sans-serif",
+      },
+    },
+    fill: {
+      type: "solid",
+      colors: projects.map((project) => `#${project.color}`),
+      opacity: 0.8,
+    },
+    states: {
+      hover: {
+        filter: {
+          type: "lighten",
+          value: 0.15,
+        },
+      },
+    },
+    shadow: {
+      enabled: true,
+      color: "#000",
+      top: 3,
+      left: 3,
+      blur: 6,
+      opacity: 0.2,
+    },
   };
 
   return (
-    <div className="schedule-view">
-      <h2>일정 보기</h2>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-        onSelectEvent={handleEventClick}
+    <div className="chart-container" style={{ width: "90vw" }}>
+      <ReactApexChart
+        options={options}
+        series={seriesData}
+        type="rangeBar"
+        height="100%"
+        width="100%"
       />
-      <Modal
-        title="일정 상세 정보"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        {selectedSchedule && (
-          <>
-            <p>사업명: {selectedSchedule.title}</p>
-            <p>
-              기간: {moment(selectedSchedule.start).format("YYYY-MM-DD")} ~{" "}
-              {moment(selectedSchedule.end).format("YYYY-MM-DD")}
-            </p>
-            <p>내용: {selectedSchedule.content}</p>
-            <div className="requirement-list">
-              {selectedSchedule.requirements.map((req, index) => (
-                <Row key={index} className="requirement-item">
-                  <Col flex="auto">{req.requirement}</Col>
-                  <Col>
-                    <Checkbox />
-                  </Col>
-                </Row>
-              ))}
-            </div>
-            <div className="modal-footer">
-              <Button type="primary" style={{ marginRight: "8px" }}>
-                수정
-              </Button>
-              <Button type="danger">삭제</Button>
-            </div>
-          </>
-        )}
-      </Modal>
     </div>
   );
 };

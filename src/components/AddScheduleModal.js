@@ -3,8 +3,6 @@ import { Modal, Form, Input, DatePicker, Button, Row, Col } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 
-const { RangePicker } = DatePicker;
-
 const AddScheduleModal = ({ visible, onCancel, onCreate, initialValues }) => {
   const [form] = Form.useForm();
 
@@ -12,16 +10,20 @@ const AddScheduleModal = ({ visible, onCancel, onCreate, initialValues }) => {
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
-        period: initialValues.period.map((date) => moment(date)), // Date 객체를 Moment.js 객체로 변환
+        dateRange: [
+          moment(initialValues.startDate),
+          moment(initialValues.endDate),
+        ],
       });
     }
   }, [initialValues, form]);
 
   const handleFinish = (values) => {
-    const { period, ...rest } = values;
+    const { dateRange, ...rest } = values;
     const formattedValues = {
       ...rest,
-      period: period.map((date) => date.toDate()), // Moment.js 객체를 Date 객체로 변환
+      startDate: dateRange[0].toDate(),
+      endDate: dateRange[1].toDate(),
       requirements: values.requirements
         ? values.requirements.filter((req) => req.requirement)
         : [],
@@ -44,11 +46,11 @@ const AddScheduleModal = ({ visible, onCancel, onCreate, initialValues }) => {
         initialValues={initialValues}
       >
         <Form.Item
-          name="period"
-          label="날짜"
-          rules={[{ required: true, message: "날짜를 선택하세요!" }]}
+          name="dateRange"
+          label="기간"
+          rules={[{ required: true, message: "기간을 선택하세요!" }]}
         >
-          <RangePicker style={{ width: "100%" }} />
+          <DatePicker.RangePicker style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item
           name="content"

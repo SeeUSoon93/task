@@ -9,10 +9,11 @@ import {
   Button,
   Row,
   Col,
+  ColorPicker,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
-import "./css/AddProjectModal.css"; // CSS 파일을 불러옵니다.
+import "./css/AddProjectModal.css";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -35,12 +36,15 @@ const AddProjectModal = ({ open, onCancel, onCreate, initialValues }) => {
   }, [initialValues, form]);
 
   const handleFinish = (values) => {
+    console.log(values.color.toHex());
     const formattedValues = {
       ...values,
-      period: values.period.map((date) => date.toDate()), // Moment.js 객체를 Date 객체로 변환
+      period: values.period.map((date) => date.toDate()),
       requirements: values.requirements
         ? values.requirements.filter((req) => req.requirement)
         : [],
+      sum: sum,
+      color: values.color.toHex(),
     };
 
     onCreate(formattedValues);
@@ -166,6 +170,9 @@ const AddProjectModal = ({ open, onCancel, onCreate, initialValues }) => {
             </>
           )}
         </Form.List>
+        <Form.Item name="color" label="">
+          <ColorPicker />
+        </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             {initialValues ? "수정" : "추가"}

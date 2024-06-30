@@ -33,9 +33,16 @@ const ProjectCard = ({
     setIsScheduleModalVisible(false);
   };
 
+  const formatNumberWithCommas = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <>
-      <Card className="project-card">
+      <Card
+        className="project-card"
+        style={{ backgroundColor: "#" + project.color }}
+      >
         <div className="card-header">
           <h2>{project.title}</h2>
         </div>
@@ -61,15 +68,15 @@ const ProjectCard = ({
           )}
           <div className="project-info">
             <span className="label button-like">지원금</span>
-            {project.support} 원
+            {formatNumberWithCommas(project.support)} 원
           </div>
           <div className="project-info">
             <span className="label button-like">자부담금</span>
-            {project.selfFund} 원
+            {formatNumberWithCommas(project.selfFund)} 원
           </div>
           <div className="project-info">
             <span className="label button-like">합계</span>
-            {project.sum} 원
+            {formatNumberWithCommas(project.sum)} 원
           </div>
           <div className="project-info">
             <span className="label button-like">결과물</span>
@@ -103,21 +110,18 @@ const ProjectCard = ({
         </div>
         <div className="card-footer">
           <Button
-            style={{ marginRight: "8px", borderColor: "#d9d9d9" }}
+            style={{ marginRight: "8px" }}
             onClick={() => onEdit(project)}
           >
             수정
           </Button>
           <Button
-            style={{ marginRight: "8px", borderColor: "#d9d9d9" }}
+            style={{ marginRight: "8px" }}
             onClick={() => onDelete(project.id)}
           >
             삭제
           </Button>
-          <Button
-            style={{ borderColor: "#d9d9d9" }}
-            onClick={() => setIsScheduleModalVisible(true)}
-          >
+          <Button onClick={() => setIsScheduleModalVisible(true)}>
             일정 추가
           </Button>
         </div>
