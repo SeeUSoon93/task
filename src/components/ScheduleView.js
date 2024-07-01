@@ -35,9 +35,9 @@ const ScheduleView = ({ projects }) => {
         show: true,
         tools: {
           download: true,
-          zoom: false,
-          zoomin: false,
-          zoomout: false,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
           pan: true,
           reset: true,
         },
