@@ -1,0 +1,51 @@
+@font-face {
+  font-family: "SUITE300";
+  font-weight: 300;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Light.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "SUITE400";
+  font-weight: 400;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "SUITE500";
+  font-weight: 500;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Medium.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "SUITE600";
+  font-weight: 600;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-SemiBold.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "SUITE700";
+  font-weight: 700;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Bold.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "SUITE800";
+  font-weight: 800;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-ExtraBold.woff2")
+    format("woff2");
+}
+@font-face {
+  font-family: "SUITE900";
+  font-weight: 900;
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Heavy.woff2")
+    format("woff2");
+}
+
+.page {
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 50px;
+  gap: 64px;
+  font-family: "SUITE400";
+}

@@ -2,56 +2,21 @@
   "name": "task",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@progress/kendo-react-intl": "^8.1.1",
-    "@progress/kendo-react-layout": "^8.1.1",
-    "@syncfusion/ej2-react-schedule": "^26.1.39",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "antd": "^5.18.3",
-    "apexcharts": "^3.49.2",
-    "dotenv": "^16.4.5",
-    "firebase": "^10.12.2",
-    "moment": "^2.30.1",
-    "react": "^18.3.1",
-    "react-apexcharts": "^1.4.1",
-    "react-big-calendar": "^1.13.0",
-    "react-calendar-timeline": "^0.28.0",
-    "react-dom": "^18.3.1",
-    "react-scripts": "5.0.1",
-    "react-timelines": "^2.6.1",
-    "vis-timeline": "^7.7.3",
-    "web-vitals": "^2.1.4"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build",
-    "predeploy": "npm run build"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "homepage": "https://seeusoon93.github.io/task/",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "antd": "^5.21.1",
+    "axios": "^1.7.7",
+    "next": "14.2.13",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1"
+    "eslint": "^8",
+    "eslint-config-next": "14.2.13"
   }
 }
