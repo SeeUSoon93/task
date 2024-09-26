@@ -54,7 +54,12 @@ export default function CardItem({ item, colorData }) {
         <h2 style={{ marginLeft: "10px" }}>{item.title}</h2>
       </div>
 
-      <CardDetail item={item} colorData={colorData} isDone={isDone} />
+      <CardDetail
+        item={item}
+        colorData={colorData}
+        isDone={isDone}
+        setIsDone={setIsDone}
+      />
       <div
         style={{
           display: "flex",
