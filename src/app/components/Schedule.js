@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
-export default function Schedule() {
+export default function Schedule({ mobile }) {
   const [taskData, setTaskData] = useState([]);
 
   const getTasks = async () => {
@@ -39,7 +39,7 @@ export default function Schedule() {
     <div style={{ padding: "0 20px" }}>
       <ScheduleHeader handleTaskAdded={handleTaskAdded} />
       <div style={{ marginTop: "20px" }}>
-        <CardList data={taskData} colorData={colorData} />
+        <CardList data={taskData} colorData={colorData} mobile={mobile} />
       </div>
     </div>
   );

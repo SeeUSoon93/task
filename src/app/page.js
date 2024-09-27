@@ -11,7 +11,7 @@ export default function Home() {
   const { mobile } = useContext(MobileContext);
 
   const items = [
-    { key: "1", label: "업무", children: <Schedule /> },
+    { key: "1", label: "업무", children: <Schedule mobile={mobile} /> },
     { key: "2", label: "캘린더", children: <CalendarPage mobile={mobile} /> }
   ];
   return (

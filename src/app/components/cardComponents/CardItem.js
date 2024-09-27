@@ -38,7 +38,7 @@ export default function CardItem({ item, colorData }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between", // 내용 사이에 여백을 균등하게
-        maxWidth: "580px"
+        flex: "1 1 auto"
       }}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -62,12 +62,14 @@ export default function CardItem({ item, colorData }) {
         <h2 style={{ marginLeft: "10px" }}>{item.title}</h2>
       </div>
 
-      <CardDetail
-        item={item}
-        colorData={colorData}
-        isDone={isDone}
-        setIsDone={setIsDone}
-      />
+      <div style={{ flexGrow: 1 }}>
+        <CardDetail
+          item={item}
+          colorData={colorData}
+          isDone={isDone}
+          setIsDone={setIsDone}
+        />
+      </div>
       <div
         style={{
           display: "flex",
