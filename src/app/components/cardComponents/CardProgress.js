@@ -5,23 +5,24 @@ import { db } from "../../firebase"; // Firebase 설정 가져오기
 
 export default function CardProgress({ item, isDone, setIsDone }) {
   const [percent, setPercent] = useState(item.percenter);
+  const [newPercent, setNewPercent] = useState(item.percenter);
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
     if (isDone) {
       setPercent(100);
     } else {
-      setPercent(0);
+      setPercent(newPercent);
     }
-  }, [isDone, item]);
+  }, [isDone, newPercent]);
 
   const handleProgressClick = () => {
     setIsEdit(true);
   };
   const handleInputChange = async (e) => {
-    let newPercent = Number(e.target.value);
+    setNewPercent(Number(e.target.value));
     if (newPercent >= 100) {
-      newPercent = 100;
+      setNewPercent(100);
     }
     setPercent(newPercent);
 
