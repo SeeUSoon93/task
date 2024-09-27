@@ -26,10 +26,8 @@ export default function Schedule() {
     getTasks();
   }, []);
 
-  const updateTask = (updatedTask) => {
-    setTaskData((prevTasks) =>
-      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
+  const handleTaskAdded = (newTask) => {
+    setTaskData((prevTasks) => [...prevTasks, newTask]);
   };
   const colorData = [
     { category: "표지 디자인", color: "blue" },
@@ -39,13 +37,9 @@ export default function Schedule() {
 
   return (
     <div style={{ padding: "0 20px" }}>
-      <ScheduleHeader />
+      <ScheduleHeader onTaskAdded={handleTaskAdded} />
       <div style={{ marginTop: "20px" }}>
-        <CardList
-          data={taskData}
-          colorData={colorData}
-          updateTask={updateTask}
-        />
+        <CardList data={taskData} colorData={colorData} />
       </div>
     </div>
   );

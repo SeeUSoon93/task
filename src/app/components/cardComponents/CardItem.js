@@ -1,25 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, Button } from "antd";
 import CardDetail from "./CardDetail";
 import { FaCheck } from "react-icons/fa";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase"; // Firebase 설정 가져오기
 
-export default function CardItem({ item, colorData, updateTask }) {
+export default function CardItem({ item, colorData }) {
   const [isDone, setIsDone] = useState(item.isDone);
   const [percent, setPercent] = useState(item.percenter);
-
-  useEffect(() => {
-    if (isDone) {
-      setPercent(100);
-    } else {
-      setPercent(0);
-    }
-  }, [isDone, percent]);
 
   const toggleIsDone = async () => {
     const newIsDone = !isDone;
     setIsDone(newIsDone);
+    const newPercent = newIsDone ? 100 : 0;
+    setPercent(newPercent);
 
     try {
       const taskDocRef = doc(db, "task", item.id);
@@ -31,11 +25,6 @@ export default function CardItem({ item, colorData, updateTask }) {
         await updateDoc(taskDocRef, { percenter: 0 });
         setPercent(0);
       }
-      updateTask({
-        ...item,
-        isDone: newIsDone,
-        percenter: newIsDone ? 100 : 0
-      });
     } catch (error) {
       console.error("Error updating isDone in Firebase: ", error);
     }

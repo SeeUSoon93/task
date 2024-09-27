@@ -1,7 +1,7 @@
 import CardItem from "./CardItem";
 import { useMemo } from "react";
 
-export default function CardList({ data, colorData, updateTask }) {
+export default function CardList({ data, colorData }) {
   // 데이터를 정렬하는 함수
   const sortedData = useMemo(() => {
     return [...data].sort((a, b) => {
@@ -37,7 +37,7 @@ export default function CardList({ data, colorData, updateTask }) {
             boxSizing: "border-box" // 패딩과 마진 포함
           }}
         >
-          <CardItem item={item} colorData={colorData} updateTask={updateTask} />
+          <CardItem item={item} colorData={colorData} />
         </div>
       ))}
     </div>
