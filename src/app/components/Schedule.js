@@ -1,7 +1,7 @@
 "use client";
 
 import CardList from "./cardComponents/CardList";
-import ScheduleHeader from "./cardComponents/SchedulHeader";
+import ScheduleHeader from "./SchedulHeader";
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
@@ -11,10 +11,10 @@ export default function Schedule() {
 
   const getTasks = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "task")); // "task" 컬렉션의 데이터 가져오기
+      const querySnapshot = await getDocs(collection(db, "task"));
       const tasks = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       }));
       setTaskData(tasks);
     } catch (error) {
@@ -26,17 +26,26 @@ export default function Schedule() {
     getTasks();
   }, []);
 
+  const updateTask = (updatedTask) => {
+    setTaskData((prevTasks) =>
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+  };
   const colorData = [
     { category: "표지 디자인", color: "blue" },
     { category: "PPT 디자인", color: "green" },
-    { category: "기타", color: "red" },
+    { category: "기타", color: "red" }
   ];
 
   return (
     <div style={{ padding: "0 20px" }}>
       <ScheduleHeader />
       <div style={{ marginTop: "20px" }}>
-        <CardList data={taskData} colorData={colorData} />
+        <CardList
+          data={taskData}
+          colorData={colorData}
+          updateTask={updateTask}
+        />
       </div>
     </div>
   );

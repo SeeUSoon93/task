@@ -22,6 +22,8 @@ export default function CardDetail({ item, colorData, isDone, setIsDone }) {
     try {
       const taskDocRef = doc(db, "task", item.id);
       await updateDoc(taskDocRef, { deadline: dateString });
+
+      onItemUpdate({ ...item, percenter: newPercenter, isDone: newIsDone });
     } catch (error) {
       console.error("Error updating deadline in Firebase: ", error);
     }
@@ -41,9 +43,6 @@ export default function CardDetail({ item, colorData, isDone, setIsDone }) {
       console.error(error);
     }
   };
-  const handleInputBlur = () => {
-    setIsEdit(false);
-  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -61,7 +60,7 @@ export default function CardDetail({ item, colorData, isDone, setIsDone }) {
           fontFamily: "SUITE600",
           margin: "10px 0",
           borderRadius: "15px",
-          boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.1)"
         }}
       >
         <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
@@ -79,7 +78,7 @@ export default function CardDetail({ item, colorData, isDone, setIsDone }) {
             margin: "10px 10px",
             borderRadius: "15px",
             boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.1)",
-            cursor: "pointer", // 클릭할 수 있음을 나타내는 커서
+            cursor: "pointer" // 클릭할 수 있음을 나타내는 커서
           }}
           onClick={() => setEditDeadline(true)} // 태그 클릭 시 DatePicker 열림
         >
@@ -94,7 +93,7 @@ export default function CardDetail({ item, colorData, isDone, setIsDone }) {
             margin: "10px 10px",
             borderRadius: "15px",
             boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.1)",
-            fontFamily: "SUITE600",
+            fontFamily: "SUITE600"
           }}
           defaultValue={dayjs(deadline)} // 기존 데드라인을 기본 값으로 설정
           format="YYYY-MM-DD"
@@ -109,34 +108,38 @@ export default function CardDetail({ item, colorData, isDone, setIsDone }) {
             style={{
               fontFamily: "SUITE600",
               fontSize: "18px",
-              marginTop: "15px",
+              marginTop: "15px"
             }}
           >
-            {item.memo}
+            {memo}
           </p>
-          <Button
-            type="text"
-            icon={<CiEdit style={{ fontSize: "18px", color: "white" }} />}
+          <div
             style={{
               marginLeft: "10px",
-              marginTop: "15px",
-              borderRadius: "50%",
-              background: "rgba(0, 0, 0, 0.6)",
-              boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.5)",
+              marginTop: "15px"
             }}
-            onClick={handleEditClick}
-          />
+          >
+            <Button
+              type="text"
+              icon={<CiEdit style={{ fontSize: "18px", color: "white" }} />}
+              style={{
+                borderRadius: "50%",
+                background: "rgba(0, 0, 0, 0.6)",
+                boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.5)"
+              }}
+              onClick={handleEditClick}
+            />
+          </div>
         </div>
       ) : (
         <Input
-          value={item.memo}
+          value={memo}
           style={{
             fontFamily: "SUITE600",
             fontSize: "18px",
-            marginTop: "15px",
+            marginTop: "15px"
           }}
           onChange={handleInputChange} // 값 변경 시 상태 업데이트
-          onBlur={handleInputBlur} // Input 외부를 클릭하면 수정 완료
           onKeyPress={handleKeyPress} // Enter 키를 누르면 수정 완료
           autoFocus
         />

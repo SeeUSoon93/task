@@ -11,7 +11,7 @@ export default function CardProgress({ item, isDone, setIsDone }) {
     if (isDone) {
       setPercent(100);
     } else {
-      setPercent(item.percenter);
+      setPercent(0);
     }
   }, [isDone, item]);
 
@@ -19,7 +19,10 @@ export default function CardProgress({ item, isDone, setIsDone }) {
     setIsEdit(true);
   };
   const handleInputChange = async (e) => {
-    const newPercent = Number(e.target.value);
+    let newPercent = Number(e.target.value);
+    if (newPercent >= 100) {
+      newPercent = 100;
+    }
     setPercent(newPercent);
 
     try {
@@ -54,7 +57,7 @@ export default function CardProgress({ item, isDone, setIsDone }) {
         justifyContent: "center",
         borderRadius: "15px",
         border: "none",
-        boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)",
+        boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)"
       }}
     >
       {!isEdit ? (
@@ -75,7 +78,7 @@ export default function CardProgress({ item, isDone, setIsDone }) {
             width: "150px",
             fontSize: "18px",
             fontFamily: "SUITE600",
-            textAlign: "center",
+            textAlign: "center"
           }}
         />
       )}
