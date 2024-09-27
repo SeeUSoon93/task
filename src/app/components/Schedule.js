@@ -37,7 +37,7 @@ export default function Schedule() {
 
   return (
     <div style={{ padding: "0 20px" }}>
-      <ScheduleHeader onTaskAdded={handleTaskAdded} />
+      <ScheduleHeader handleTaskAdded={handleTaskAdded} />
       <div style={{ marginTop: "20px" }}>
         <CardList data={taskData} colorData={colorData} />
       </div>

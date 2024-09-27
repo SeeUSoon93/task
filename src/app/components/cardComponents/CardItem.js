@@ -37,7 +37,8 @@ export default function CardItem({ item, colorData }) {
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between" // 내용 사이에 여백을 균등하게
+        justifyContent: "space-between", // 내용 사이에 여백을 균등하게
+        maxWidth: "580px"
       }}
     >
       <div style={{ display: "flex", alignItems: "center" }}>

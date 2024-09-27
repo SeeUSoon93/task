@@ -50,7 +50,7 @@ export default function TaskAddModal({ visible, setVisible, handleTaskAdded }) {
         id: docRef.id,
         title: taskName,
         category: category,
-        deadline: deadline.format("YYYY-MM-DD"),
+        deadline: deadline,
         memo: description,
         researcher: researcher,
         isDone: false,
