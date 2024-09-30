@@ -1,14 +1,32 @@
 import { useState } from "react";
-import { Card, Button } from "antd";
+import { Card, Button, Modal } from "antd";
 import CardDetail from "./CardDetail";
 import { FaCheck } from "react-icons/fa";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase"; // Firebase 설정 가져오기
+import { IoTrashBinOutline } from "react-icons/io5";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
-export default function CardItem({ item, colorData }) {
+export default function CardItem({ item, colorData, handleTaskDelete }) {
   const [isDone, setIsDone] = useState(item.isDone);
   const [percent, setPercent] = useState(item.percenter);
-
+  // 삭제 확인 모달을 띄우는 함수
+  const showDeleteConfirm = () => {
+    Modal.confirm({
+      title: "정말로 삭제하시겠습니까?",
+      icon: <ExclamationCircleOutlined />,
+      content: "이 작업을 삭제하면 되돌릴 수 없습니다.",
+      okText: "확인",
+      okType: "danger",
+      cancelText: "취소",
+      onOk() {
+        handleDelete(); // 확인을 누르면 삭제 함수 호출
+      },
+      onCancel() {
+        console.log("취소됨");
+      }
+    });
+  };
   const toggleIsDone = async () => {
     const newIsDone = !isDone;
     setIsDone(newIsDone);
@@ -30,6 +48,16 @@ export default function CardItem({ item, colorData }) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const taskDocRef = doc(db, "task", item.id);
+      await deleteDoc(taskDocRef);
+      handleTaskDelete(item.id);
+    } catch (error) {
+      console.error("Error deleting task in Firebase: ", error);
+    }
+  };
+
   return (
     <Card
       style={{
@@ -40,28 +68,34 @@ export default function CardItem({ item, colorData }) {
         justifyContent: "space-between", // 내용 사이에 여백을 균등하게
         flex: "1 1 auto"
       }}
-    >
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <div
-          style={{
-            width: "25px",
-            height: "25px"
-          }}
-        >
-          <Button
-            size="small"
-            icon={<FaCheck color={isDone ? "black" : "white"} />}
+      extra={
+        <IoTrashBinOutline
+          style={{ fontSize: "20px", cursor: "pointer" }}
+          onClick={showDeleteConfirm}
+        />
+      }
+      title={
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div
             style={{
               width: "25px",
-              height: "25px",
-              boxShadow: "0px 0px 3px rgba(0, 0, 0, 0.5)"
+              height: "25px"
             }}
-            onClick={toggleIsDone} // 클릭 시 상태 토글
-          />
+          >
+            <Button
+              size="small"
+              icon={<FaCheck color={isDone ? "black" : "white"} />}
+              style={{
+                width: "25px",
+                height: "25px"
+              }}
+              onClick={toggleIsDone} // 클릭 시 상태 토글
+            />
+          </div>
+          <h3 style={{ marginLeft: "10px" }}>{item.title}</h3>
         </div>
-        <h2 style={{ marginLeft: "10px" }}>{item.title}</h2>
-      </div>
-
+      }
+    >
       <div style={{ flexGrow: 1 }}>
         <CardDetail
           item={item}

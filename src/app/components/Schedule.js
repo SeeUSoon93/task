@@ -39,6 +39,11 @@ export default function Schedule({ mobile, user }) {
     fetchTasks();
   };
 
+  const handleTaskDelete = (taskId) => {
+    setTaskData((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+
+    fetchTasks();
+  };
   // 데이터를 정렬하는 함수
   const sortedData = useMemo(() => {
     return [...taskData].sort((a, b) => {
@@ -69,7 +74,12 @@ export default function Schedule({ mobile, user }) {
     <div style={{ padding: "0 20px" }}>
       <ScheduleHeader handleTaskAdded={handleTaskAdded} user={user} />
       <div style={{ marginTop: "20px" }}>
-        <CardList data={sortedData} colorData={colorData} mobile={mobile} />
+        <CardList
+          data={sortedData}
+          colorData={colorData}
+          mobile={mobile}
+          handleTaskDelete={handleTaskDelete}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,11 @@
 import CardItem from "./CardItem";
 
-export default function CardList({ data, colorData, mobile }) {
+export default function CardList({
+  data,
+  colorData,
+  mobile,
+  handleTaskDelete
+}) {
   return (
     <div
       style={{
@@ -21,7 +26,11 @@ export default function CardList({ data, colorData, mobile }) {
             maxWidth: mobile ? "100%" : "calc(33.333% - 16px)" // 모바일이면 최대 너비 100%, 아니면 33.333%
           }}
         >
-          <CardItem item={item} colorData={colorData} />
+          <CardItem
+            item={item}
+            colorData={colorData}
+            handleTaskDelete={handleTaskDelete}
+          />
         </div>
       ))}
     </div>
