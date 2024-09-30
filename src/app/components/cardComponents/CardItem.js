@@ -5,6 +5,7 @@ import { FaCheck } from "react-icons/fa";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase"; // Firebase 설정 가져오기
 import { MdDeleteForever } from "react-icons/md";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 export default function CardItem({ item, colorData, handleTaskDelete }) {
   const [isDone, setIsDone] = useState(item.isDone);
