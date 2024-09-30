@@ -22,27 +22,30 @@ const groupTasksByDate = (tasks) => {
   }, {});
 };
 
-export default function CalendarPage() {
+export default function CalendarPage({ user }) {
   const [taskData, setTaskData] = useState([]);
   const [isMobileView, setIsMobileView] = useState(false); // 모바일 뷰 상태 관리
 
-  // Firebase에서 task 데이터 가져오기
-  const getTasks = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "task"));
-      const tasks = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTaskData(tasks);
-    } catch (error) {
-      console.error("Error fetching tasks: ", error);
-    }
-  };
-
   useEffect(() => {
-    getTasks();
-  }, []);
+    const fetchTasks = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "task"));
+        const tasks = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+          }))
+          .filter((task) => task.userUid === user.uid);
+        setTaskData(tasks);
+      } catch (error) {
+        console.error("Error fetching tasks: ", error);
+      }
+    };
+
+    if (user) {
+      fetchTasks();
+    }
+  }, [user]);
 
   useEffect(() => {
     // 모바일 화면일 때 뷰 변경
@@ -75,7 +78,7 @@ export default function CalendarPage() {
     return (
       <ul className="events">
         {listData.map((item) => (
-          <li key={item.content} style={{ marginBottom: "10px" }}>
+          <li key={item.id} style={{ marginBottom: "10px" }}>
             <Badge
               status={item.isDone ? "processing" : "error"}
               style={{ marginRight: "8px" }} // Badge와 텍스트 간의 여백 설정

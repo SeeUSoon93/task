@@ -13,7 +13,12 @@ import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore"; // Firestore 관련 함수 가져오기
 import { db } from "../../firebase"; // Firebase 설정 가져오기
 
-export default function TaskAddModal({ visible, setVisible, handleTaskAdded }) {
+export default function TaskAddModal({
+  visible,
+  setVisible,
+  handleTaskAdded,
+  user
+}) {
   const [form] = Form.useForm(); // Ant Design Form 사용
   const [loading, setLoading] = useState(false); // 저장 중 상태 관리
 
@@ -34,30 +39,31 @@ export default function TaskAddModal({ visible, setVisible, handleTaskAdded }) {
     const { taskName, category, deadline, description, researcher } = values;
 
     try {
-      // Firestore에 새 업무 추가
       const docRef = await addDoc(collection(db, "task"), {
         title: taskName,
         category: category,
-        deadline: deadline.format("YYYY-MM-DD"), // DatePicker에서 선택한 날짜
+        deadline: deadline.format("YYYY-MM-DD"),
         memo: description,
         researcher: researcher,
         isDone: false,
-        percenter: 0
+        percenter: 0,
+        userUid: user.uid
       });
 
-      // 새로운 작업 객체 생성
+      // Firestore에서 문서 추가 후, 새로 추가된 작업 데이터를 생성
       const newTask = {
         id: docRef.id,
         title: taskName,
         category: category,
-        deadline: deadline,
+        deadline: deadline.format("YYYY-MM-DD"),
         memo: description,
         researcher: researcher,
         isDone: false,
-        percenter: 0
+        percenter: 0,
+        userUid: user.uid
       };
 
-      // 상위 컴포넌트에 새 작업 전달하여 상태 업데이트
+      // 상위 컴포넌트로 새 작업을 넘겨주어 상태 업데이트
       handleTaskAdded(newTask);
 
       success(); // 성공 알림
@@ -108,10 +114,12 @@ export default function TaskAddModal({ visible, setVisible, handleTaskAdded }) {
         >
           <Select
             size="large"
-            defaultValue="표지 디자인"
+            defaultValue="카테고리를 선택해주세요"
             options={[
               { value: "표지 디자인", label: "표지 디자인" },
               { value: "PPT 디자인", label: "PPT 디자인" },
+              { value: "개발", label: "개발" },
+              { value: "문서 작성", label: "문서 작성" },
               { value: "기타", label: "기타" }
             ]}
           />
@@ -133,10 +141,14 @@ export default function TaskAddModal({ visible, setVisible, handleTaskAdded }) {
         </Form.Item>
         <Form.Item>
           <Button
-            type="primary"
             htmlType="submit"
             loading={loading} // 저장 중이면 로딩 표시
             size="large"
+            style={{
+              background: "#70CACD",
+              color: "white",
+              fontFamily: "SUITE600"
+            }}
             block
           >
             추가하기

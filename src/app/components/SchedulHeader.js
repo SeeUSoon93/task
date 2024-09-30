@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa";
 import TaskAddModal from "./modalComponents/TaskAddModal";
 import { useState } from "react";
 
-export default function ScheduleHeader({ handleTaskAdded }) {
+export default function ScheduleHeader({ handleTaskAdded, user }) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -24,6 +24,7 @@ export default function ScheduleHeader({ handleTaskAdded }) {
         visible={visible}
         setVisible={setVisible}
         handleTaskAdded={handleTaskAdded}
+        user={user}
       />
     </div>
   );
