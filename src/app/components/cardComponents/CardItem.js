@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Card, Button, Modal } from "antd";
+import { useState, useEffect } from "react";
+import { Card, Button, Modal, Badge } from "antd";
 import CardDetail from "./CardDetail";
 import { FaCheck } from "react-icons/fa";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
@@ -10,6 +10,21 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 export default function CardItem({ item, colorData, handleTaskDelete }) {
   const [isDone, setIsDone] = useState(item.isDone);
   const [percent, setPercent] = useState(item.percenter);
+  const [isEmergency, setIsEmergency] = useState(false);
+
+  useEffect(() => {
+    const today = new Date();
+    const deadline = new Date(item.deadline);
+    const diff = deadline - today; // 차이를 밀리초로 계산
+
+    // 마감일이 3일 미만(밀리초로 계산)이고, 작업이 완료되지 않았을 경우
+    if (diff < 3 * 24 * 60 * 60 * 1000 && !isDone) {
+      setIsEmergency(true);
+    } else {
+      setIsEmergency(false); // 조건에 맞지 않으면 긴급 상태를 해제
+    }
+  }, [item.deadline, isDone]); // 마감일이나 완료 상태가 바뀔 때마다 실행
+
   // 삭제 확인 모달을 띄우는 함수
   const showDeleteConfirm = () => {
     Modal.confirm({
@@ -59,7 +74,7 @@ export default function CardItem({ item, colorData, handleTaskDelete }) {
   };
 
   return (
-    <Card
+    <div
       style={{
         width: "100%",
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
@@ -68,59 +83,86 @@ export default function CardItem({ item, colorData, handleTaskDelete }) {
         justifyContent: "space-between", // 내용 사이에 여백을 균등하게
         flex: "1 1 auto"
       }}
-      extra={
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <MdDeleteForever
-            style={{
-              fontSize: "23px",
-              cursor: "pointer",
-              color: "#70CACD"
-            }}
-            onClick={showDeleteConfirm}
-          />
-        </div>
-      }
-      title={
-        <div style={{ display: "flex", alignItems: "center" }}>
+    >
+      <Badge.Ribbon
+        text={
           <div
             style={{
-              width: "25px",
-              height: "25px"
+              display: "flex", // flex로 설정하여 가로, 세로 중앙 정렬
+              justifyContent: "center", // 가로 중앙
+              alignItems: "center", // 세로 중앙
+              height: "100%" // 높이를 100%로 설정하여 중앙에 맞춤
             }}
           >
-            <Button
-              size="small"
-              icon={<FaCheck color={isDone ? "black" : "white"} />}
-              style={{
-                width: "25px",
-                height: "25px"
-              }}
-              onClick={toggleIsDone} // 클릭 시 상태 토글
-            />
+            마감 임박
           </div>
-          <h3 style={{ marginLeft: "10px" }}>{item.title}</h3>
-        </div>
-      }
-    >
-      <div style={{ flexGrow: 1 }}>
-        <CardDetail
-          item={item}
-          colorData={colorData}
-          isDone={isDone}
-          setIsDone={setIsDone}
-        />
-      </div>
-      <div
+        }
+        color="#FF004F"
         style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "10px",
-          fontSize: "16px",
-          fontFamily: "SUITE600"
+          marginTop: "48px",
+          fontSize: "18px",
+          fontFamily: "SUITE400",
+          display: isEmergency ? "block" : "none",
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
+          height: "30px"
         }}
       >
-        <p style={{ color: "gray" }}>담당 연구원 : {item.researcher}</p>
-      </div>
-    </Card>
+        <Card
+          extra={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <MdDeleteForever
+                style={{
+                  fontSize: "23px",
+                  cursor: "pointer",
+                  color: "#70CACD"
+                }}
+                onClick={showDeleteConfirm}
+              />
+            </div>
+          }
+          title={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  width: "25px",
+                  height: "25px"
+                }}
+              >
+                <Button
+                  size="small"
+                  icon={<FaCheck color={isDone ? "black" : "white"} />}
+                  style={{
+                    width: "25px",
+                    height: "25px"
+                  }}
+                  onClick={toggleIsDone} // 클릭 시 상태 토글
+                />
+              </div>
+              <h3 style={{ marginLeft: "10px" }}>{item.title}</h3>
+            </div>
+          }
+        >
+          <div style={{ flexGrow: 1 }}>
+            <CardDetail
+              item={item}
+              colorData={colorData}
+              isDone={isDone}
+              setIsDone={setIsDone}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "10px",
+              fontSize: "16px",
+              fontFamily: "SUITE600"
+            }}
+          >
+            <p style={{ color: "gray" }}>담당 연구원 : {item.researcher}</p>
+          </div>
+        </Card>
+      </Badge.Ribbon>
+    </div>
   );
 }
