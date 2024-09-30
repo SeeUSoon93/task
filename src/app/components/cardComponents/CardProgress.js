@@ -8,6 +8,15 @@ export default function CardProgress({ item, isDone, setIsDone }) {
   const [newPercent, setNewPercent] = useState(item.percenter);
   const [isEdit, setIsEdit] = useState(false);
 
+  const multiColorGradient = {
+    "0%": "#4F7CAC",
+    "25%": "#C0E0DE",
+    "50%": "#70CACD",
+    "75%": "#2072AF",
+    "90%": "#B9D9EB",
+    "100%": "#4F7CAC"
+  };
+
   useEffect(() => {
     if (isDone) {
       setPercent(100);
@@ -20,16 +29,15 @@ export default function CardProgress({ item, isDone, setIsDone }) {
     setIsEdit(true);
   };
   const handleInputChange = async (e) => {
-    setNewPercent(Number(e.target.value));
-    if (newPercent >= 100) {
-      setNewPercent(100);
-    }
-    setPercent(newPercent);
+    const inputValue = Number(e.target.value);
+    const clampedValue = Math.min(inputValue, 100); // 100을 초과하지 않도록 제한
+    setNewPercent(clampedValue); // 새 퍼센트를 바로 업데이트
+    setPercent(clampedValue); // 바로 퍼센트 업데이트
 
     try {
       const taskDocRef = doc(db, "task", item.id);
-      await updateDoc(taskDocRef, { percenter: newPercent });
-      if (newPercent >= 100) {
+      await updateDoc(taskDocRef, { percenter: clampedValue }); // 입력된 값으로 업데이트
+      if (clampedValue >= 100) {
         setIsDone(true);
         await updateDoc(taskDocRef, { isDone: true });
       } else {
@@ -40,6 +48,7 @@ export default function CardProgress({ item, isDone, setIsDone }) {
       console.error("Error updating percenter in Firebase: ", error);
     }
   };
+
   const handleInputBlur = () => {
     setIsEdit(false); // 수정 완료 후 Progress로 돌아감
   };
@@ -67,6 +76,7 @@ export default function CardProgress({ item, isDone, setIsDone }) {
           percent={percent}
           style={{ fontFamily: "SUITE600", cursor: "pointer" }} // 클릭 가능한 커서 추가
           onClick={handleProgressClick} // Progress 클릭 시 편집 모드로 전환
+          strokeColor={multiColorGradient}
         />
       ) : (
         <Input

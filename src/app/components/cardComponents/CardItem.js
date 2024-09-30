@@ -4,8 +4,7 @@ import CardDetail from "./CardDetail";
 import { FaCheck } from "react-icons/fa";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase"; // Firebase 설정 가져오기
-import { IoTrashBinOutline } from "react-icons/io5";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { MdDeleteForever } from "react-icons/md";
 
 export default function CardItem({ item, colorData, handleTaskDelete }) {
   const [isDone, setIsDone] = useState(item.isDone);
@@ -69,10 +68,16 @@ export default function CardItem({ item, colorData, handleTaskDelete }) {
         flex: "1 1 auto"
       }}
       extra={
-        <IoTrashBinOutline
-          style={{ fontSize: "20px", cursor: "pointer" }}
-          onClick={showDeleteConfirm}
-        />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <MdDeleteForever
+            style={{
+              fontSize: "23px",
+              cursor: "pointer",
+              color: "#70CACD"
+            }}
+            onClick={showDeleteConfirm}
+          />
+        </div>
       }
       title={
         <div style={{ display: "flex", alignItems: "center" }}>
