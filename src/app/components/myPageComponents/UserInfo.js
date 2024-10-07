@@ -1,10 +1,13 @@
 import { Card, Avatar, Button } from "antd";
-
+import dynamic from "next/dynamic";
 import { useState, useEffect, useCallback } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
-import dayjs from "dayjs"; // 날짜 처리를 위한 라이브러리
-import ApexCharts from "react-apexcharts";
+import dayjs from "dayjs";
+
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false
+});
 
 export default function UserInfo({ user, logout }) {
   const [taskData, setTaskData] = useState([]);
@@ -195,7 +198,7 @@ export default function UserInfo({ user, logout }) {
         }}
       >
         {chartData.series && (
-          <ApexCharts
+          <ReactApexChart
             options={chartData.options}
             series={chartData.series}
             type="line"
