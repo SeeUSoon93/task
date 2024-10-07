@@ -18,6 +18,8 @@ export default function Home() {
   useEffect(() => {
     if (!user) {
       setActiveKey("3"); // 유저가 없으면 마이페이지로 강제 이동
+    } else {
+      setActiveKey("1");
     }
   }, [user]);
 

@@ -77,7 +77,7 @@ export default function CardItem({ item, colorData, handleTaskDelete }) {
     <div
       style={{
         width: "100%",
-        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+        marginTop: "15px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between", // 내용 사이에 여백을 균등하게
@@ -108,6 +108,11 @@ export default function CardItem({ item, colorData, handleTaskDelete }) {
         }}
       >
         <Card
+          style={{
+            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+            borderRadius: "15px",
+            border: "none"
+          }}
           extra={
             <div style={{ display: "flex", alignItems: "center" }}>
               <MdDeleteForever
